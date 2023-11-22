@@ -1,0 +1,47 @@
+Documentation consists of two files contained within this zip file:
+
+* The pdf entitled "Lyapunews" (written for the "C" for Fortran versions of the code, the discussion of parameter selection, etc. is identical for the Matlab version of the code).
+
+* A copy of the original publication that describes the algorithm for estimating the dominant Lyapunov exponent from experimental data (as well as an algorithm that works from the governing difference or differential equations): "Determining Lyapunov Exponents From A Time Series", Wolf et al., Physica 16D, 285-317 (1985).
+
+The files contained in the zip archive:
+
+testbench.m  <--- USERS CALL THIS SCRIPT, which contains all input parameters and calls the functions BASGEN, FET, and MAKEPLOT which are described below.
+
+basgen.m     <--- Function that creates a database which speeds the calculation of the dominant Lyapunov exponent.
+fet.m        <--- Function that estimates the dominant Lyapunov exponent by monitoring orbital divergence.
+makeplot.m   <--- Function that generates graphical output showing orbital divergence between a fiducial trajectory and optimal nearest neighbors.
+
+search.m     <--- Function called by FET to find optimal nearest neighbors.
+
+data2.lor    <--- A sample time series: 16,384 points of Lorenz attractor data (b=8/3, sigma=10, r=28, dt=0.01 sec), for which the dominant Lyapunov exponent is approximately 2.1 bits/second.
+
+As a result of running testbench.m, a text file, fetout.txt, will be generated, showing the running estimate of the dominant Lyapunov exponent as the fiducial trajectory makes it way through the time series.
+
+A short video showing the graphical output of the Matlab program for sensible input parameters (but not providing instructions) is at: http://youtu.be/I4rscPXUYFk
+
+================
+
+basgen parameters (here, for the Lorenz data set):
+datcnt = 16384;   <======== number of points in the time series.
+tau = 8;          <======== time delay for reconstructing the attractor in ndim dimensions.
+ndim = 3;         <======== the dimension of the delay reconstructed attractor.
+ires = 10;        <======== leave this at 10. the points of the time series, when delay reconstructed in ndim dimensions, will be placed in 10^ndim boxes. (Empty boxes require no memory storage.)
+maxbox = 6000;    <======== leave this at 6000. unless the attractor is high dimensional, 6000 non-empty boxes are likely to be adequate.
+
+fet parameters
+dt = .01;         <======== time in seconds between time series samples
+evolve = 20;      <======== time (in # of samples) to propagate a pair of points (from fiducial trajectory and an optimal nearest neighbor) before testing to see if the neighbor needs to be replaced.
+dismin = 0.001;   <======== minimum separation between fiducial data point and new nearest neighbor (choose a value above the noise level). a relative (%) value -- scaled to the data set.
+dismax = 0.3;     <======== maximum separation between fiducial data point and current nearest neighbor before replacement is permitted. also a relative value -- scaled to the data set.
+thmax = 30;       <======== permissible angular error upon replacement of current nearest neighbor, in degrees.
+
+================
+
+Note that I do use log base 2, rather than log base e used by many others. I like log base 2 for its information theoretic value (bits/second). You can always convert with a factor of ln(2).
+
+
+Alan Wolf
+awolf.physics@gmail.com
+
+10/12/14
